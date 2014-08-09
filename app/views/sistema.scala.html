@@ -20,7 +20,9 @@
 	 	 <center><img class="centralizar" src="@routes.Assets.at("images/logo.png")" /> </center>
         <ul class="nav nav-pills">
           <li class="active"><a href="/""> In&iacute;cio</a></li>
+          <li><a href="/login">Login</a></li>
           <li><a href="/cadastro">Cadastrar um novo Hackfest</a></li>
+          
           
         </ul>	
         <div class="container form-horizontal panel panel-primary text-info" >
@@ -33,11 +35,11 @@
         </h4>
         </div>      
         
-        @eventos(sistema, "Engenharia de Software")
-        @eventos(sistema, "Sistemas da Informacao")
-        @eventos(sistema, "Banco de Dados")
-        @eventos(sistema, "Computacao Desplugada")
-        @eventos(sistema, "Desenvolvimento para Web")
+        @eventos(sistema, "Engenharia de Software",false)
+        @eventos(sistema, "Sistemas da Informacao",false)
+        @eventos(sistema, "Banco de Dados",true)
+        @eventos(sistema, "Computacao Desplugada",false)
+        @eventos(sistema, "Desenvolvimento para Web",false)
         
         
 		

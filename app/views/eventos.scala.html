@@ -1,4 +1,4 @@
-@(sistema: Sistema, tema: String)
+@(sistema: Sistema, tema: String, logado:Boolean)
  <div class="container form-horizontal panel panel-primary text-info" >
 <h2>Eventos que envolvem @tema:</h2>
 
@@ -9,8 +9,9 @@
                             <th>Nome </th>
                             <th>Descricao </th>
                             <th>Data </th>
-                             
+                            <!-- [if (logado == true)]> 
                             <th>A&ccedil;&otilde;es </th>
+                            <![endif]-->
                         </tr>
                     </thead>
                     <tbody>
@@ -21,12 +22,15 @@
                             <td>@evento.getDescricao()</td>
                             <td>@evento.getData()</td>
                             
-                            <td>
-                                                    
+                           
+                           <!-- [if (logado == true)]>  
+                            <td>                       
                             <form action="@routes.Application.participar(evento.getId())" method="post"> 
                                 <input type="submit" class="btn btn-primary" value="Participar">
                             </form> 
                             </td>
+                            <![endif]-->
+                            
                         </tr>
                         
                     }

@@ -112,6 +112,10 @@ public class Application extends Controller {
     	
     }
     
+    public static Result login(){
+    	return ok(views.html.login.render());
+    }
+    
     @Transactional
     public static Result cadastro() {
     	Sistema sistema = new Sistema();
