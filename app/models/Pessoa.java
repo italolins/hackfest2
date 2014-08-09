@@ -23,6 +23,9 @@ public class Pessoa {
 	@Column
 	private String email;
 	
+	@Column
+	private String senha;
+	
 	// Construtor vazio para o Hibernate criar os objetos
 	public Pessoa (){
 		
@@ -31,6 +34,7 @@ public class Pessoa {
 	public Pessoa (String nome, String email){
 		this.email = email;
 		this.nome = nome;
+		this.senha = senha;
 	}
 
 	public String getNome() {
@@ -47,6 +51,14 @@ public class Pessoa {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 	public Long getId() {

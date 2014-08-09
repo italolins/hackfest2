@@ -1,6 +1,8 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -60,6 +62,7 @@ public class Evento implements Comparable<Evento> {
 	public Evento(){
 		this.PessoasQueConfirmaram = new TreeSet<Pessoa>();
 	}
+	
 	public Evento(String nome, String descricao, String data, String nomeAdmin, String emailAdmin) {
 		this.nome = nome;
 		this.descricao = descricao;
@@ -94,8 +97,17 @@ public class Evento implements Comparable<Evento> {
 	}
 	public void setNumDePessoasQueConfirmaram(
 			Set<Pessoa> numDePessoasQueConfirmaram) {
-		this.PessoasQueConfirmaram = numDePessoasQueConfirmaram;
+		this.PessoasQueConfirmaram =  numDePessoasQueConfirmaram;
 	}
+	
+	//adiciona participante sem acoplamento
+	public void addParticipanteNoEvento(String nome,String email) {
+		if (!this.PessoasQueConfirmaram.contains(new Pessoa(nome,email))){
+		this.PessoasQueConfirmaram.add(new Pessoa(nome,email));
+		}
+	}
+	
+	//isso aqui esta feio!!!
 	public void addParticipanteNoEvento(Pessoa pessoa) {
 		if (!this.PessoasQueConfirmaram.contains(pessoa)){
 		this.PessoasQueConfirmaram.add(pessoa);
@@ -132,10 +144,10 @@ public class Evento implements Comparable<Evento> {
 		this.id = id;
 	}
 	public Set<Pessoa> getPessoasQueConfirmaram() {
-		return PessoasQueConfirmaram;
+		return  PessoasQueConfirmaram;
 	}
 	public void setPessoasQueConfirmaram(Set<Pessoa> pessoasQueConfirmaram) {
-		PessoasQueConfirmaram = pessoasQueConfirmaram;
+		PessoasQueConfirmaram =  pessoasQueConfirmaram;
 	}
 	public String getNomeAdmin() {
 		return nomeAdmin;

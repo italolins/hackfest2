@@ -2,8 +2,10 @@ package models;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.*;
 
@@ -19,6 +21,11 @@ public class Sistema {
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinColumn
 	private List<Evento> eventos;
+	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@JoinColumn
+	private Set<Pessoa> clientesDoSistema; //Nao sei o pq mas so funciona com Set  =s
+	
 	
 	// Construtor vazio para o Hibernate criar os objetos 
 	public Sistema(){
@@ -99,7 +106,9 @@ public class Sistema {
 		this.id = id;
 	}
 	
-	
+	public void signUp(String nome,String email,String senha){
+		clientesDoSistema.add(new Pessoa(nome,email));
+	}
 	
 
 }

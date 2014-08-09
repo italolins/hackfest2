@@ -6,6 +6,7 @@ import models.*;
 import models.dao.GenericDAO;
 import models.dao.GenericDAOImpl;
 import play.*;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.db.jpa.Transactional;
 import play.mvc.*;
@@ -116,6 +117,22 @@ public class Application extends Controller {
     	return ok(views.html.login.render());
     }
     
+    public static Result signup(){
+    	return ok(views.html.signUp.render());
+    }
+    
+    @Transactional
+    public static Result cadastrarUsuario(){
+    	DynamicForm requestData = Form.form().bindFromRequest();
+    	String nome = requestData.get("nome");
+    	String email = requestData.get("email");
+    	String senha = requestData.get("password");
+    	Sistema sistema = new Sistema();
+    	List<Evento> result = getDao().findAllByClassName("Evento");
+    	sistema.setEventos(result);
+    	return ok(views.html.sistema.render(sistema));
+    }
+    
     @Transactional
     public static Result cadastro() {
     	Sistema sistema = new Sistema();
@@ -132,8 +149,8 @@ public class Application extends Controller {
     	// O formulario de evento
 		Form<Evento> filledForm = eventoForm.bindFromRequest();
 		
-		
-		Evento evento = filledForm.get();
+		//Não entendi como funciona isso
+		Evento evento = filledForm.get(); 
 		
 		Sistema sistema = new Sistema();
     	sistema.setEventos(result);;
@@ -161,15 +178,18 @@ public class Application extends Controller {
     
     @Transactional
     public static Result addParticipante(Long id) {
+    	DynamicForm requestData = Form.form().bindFromRequest();
     	// Todos o eventos do Banco de Dados
     	List<Evento> result = getDao().findAllByClassName("Evento");
     	// Lista de Pessoa
     	List<Pessoa> pessoas = getDao().findAllByClassName("Pessoa");
     	// O formulario de pessoa
-		Form<Pessoa> filledForm = pessoaForm.bindFromRequest();
-		Pessoa pessoa = filledForm.get();
+		//Form<Pessoa> filledForm = pessoaForm.bindFromRequest();
+		String nome = requestData.get("nome");
+		String email = requestData.get("email");
+		//Pessoa pessoa = filledForm.get();
 		Evento evento = getDao().findByEntityId(Evento.class, id);
-		evento.addParticipanteNoEvento(pessoa);
+		evento.addParticipanteNoEvento(nome,email);
 		getDao().removeById(Evento.class, id);
 		getDao().flush();
 		getDao().persist(evento);
