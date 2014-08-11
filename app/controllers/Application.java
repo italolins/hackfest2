@@ -17,6 +17,9 @@ public class Application extends Controller {
 	static Form<Pessoa> pessoaForm = Form.form(Pessoa.class);
 	private static GenericDAO dao = new GenericDAOImpl();
 	private static int controleInicio;
+	
+	private static Sistema sistema = new Sistema();
+	
 
     public static Result index() {
         return ok(index.render("Your new application is ready."));
@@ -133,6 +136,26 @@ public class Application extends Controller {
     	return ok(views.html.sistema.render(sistema));
     }
     
+    
+    //@Transactional
+    public static Result logar(){
+    	DynamicForm requestData = Form.form().bindFromRequest();
+    	String nome = requestData.get("nome");
+    	String senha = requestData.get("senha");
+    	//List<Sistema> aux = getDao().findAllByClassName("Sistema");
+    	//Sistema sistema = aux.get(0);
+    	if(sistema.temUsuario(nome,senha)){
+    		//getDao().persist(sistema);
+        	//getDao().flush();
+    		return ok(views.html.sistema.render(sistema));
+    	}else{
+    		//getDao().persist(sistema);
+        	//getDao().flush();
+    		return ok(views.html.login.render());
+    	}
+    	
+    }
+    
     @Transactional
     public static Result cadastro() {
     	Sistema sistema = new Sistema();
@@ -181,18 +204,15 @@ public class Application extends Controller {
     	DynamicForm requestData = Form.form().bindFromRequest();
     	// Todos o eventos do Banco de Dados
     	List<Evento> result = getDao().findAllByClassName("Evento");
-    	// Lista de Pessoa
-    	List<Pessoa> pessoas = getDao().findAllByClassName("Pessoa");
-    	// O formulario de pessoa
-		//Form<Pessoa> filledForm = pessoaForm.bindFromRequest();
+    	
 		String nome = requestData.get("nome");
 		String email = requestData.get("email");
-		//Pessoa pessoa = filledForm.get();
+		
 		Evento evento = getDao().findByEntityId(Evento.class, id);
-		evento.addParticipanteNoEvento(nome,email);
-		getDao().removeById(Evento.class, id);
-		getDao().flush();
+		evento.addParticipanteNoEvento(nome,email,null);
+		
 		getDao().persist(evento);
+		getDao().flush();
 		Sistema sistema = new Sistema();
     	result = getDao().findAllByClassName("Evento");
     	sistema.setEventos(result);

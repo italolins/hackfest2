@@ -1,5 +1,7 @@
 package models;
 
+
+import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,13 +56,13 @@ public class Evento implements Comparable<Evento> {
 	@Column
 	private String tema5;
 		
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn 
-	private Set<Pessoa> PessoasQueConfirmaram;
+	private List<Pessoa> PessoasQueConfirmaram;
 	
 	// Construtor vazio para o Hibernate criar os objetos
 	public Evento(){
-		this.PessoasQueConfirmaram = new TreeSet<Pessoa>();
+		this.PessoasQueConfirmaram = new ArrayList<Pessoa>();
 	}
 	
 	public Evento(String nome, String descricao, String data, String nomeAdmin, String emailAdmin) {
@@ -69,7 +71,7 @@ public class Evento implements Comparable<Evento> {
 		this.data = data;
 		this.nomeAdmin = nomeAdmin;
 		this.emailAdmin = emailAdmin;
-		this.PessoasQueConfirmaram = new TreeSet<Pessoa>();
+		this.PessoasQueConfirmaram = new ArrayList<Pessoa>();
 		
 		
 	}
@@ -92,26 +94,43 @@ public class Evento implements Comparable<Evento> {
 		this.data = data;
 	}
 		
-	public Set<Pessoa> getNumDePessoasQueConfirmaram() {
-		return PessoasQueConfirmaram;
+	public int getNumDePessoasQueConfirmaram() {
+		return PessoasQueConfirmaram.size();
 	}
 	public void setNumDePessoasQueConfirmaram(
-			Set<Pessoa> numDePessoasQueConfirmaram) {
+			List<Pessoa> numDePessoasQueConfirmaram) {
 		this.PessoasQueConfirmaram =  numDePessoasQueConfirmaram;
 	}
 	
 	//adiciona participante sem acoplamento
-	public void addParticipanteNoEvento(String nome,String email) {
-		if (!this.PessoasQueConfirmaram.contains(new Pessoa(nome,email))){
-		this.PessoasQueConfirmaram.add(new Pessoa(nome,email));
-		}
+	public void addParticipanteNoEvento(String nome,String email,String senha) {
+		//if (!this.PessoasQueConfirmaram.contains(new Pessoa(nome,email,null))){
+		this.PessoasQueConfirmaram.add(new Pessoa(nome,email,senha));
+		//}
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Evento)){
+			return false;
+		}else{
+			Evento event = (Evento)obj;
+			return (event.getNome().equals(this.nome));
+		}
+
+	}
 	//isso aqui esta feio!!!
 	public void addParticipanteNoEvento(Pessoa pessoa) {
-		if (!this.PessoasQueConfirmaram.contains(pessoa)){
+		//if (!this.PessoasQueConfirmaram.contains(pessoa)){
 		this.PessoasQueConfirmaram.add(pessoa);
-		}
+		//}
 	}
 	
 	public void removerParticipanteNoEvento(Pessoa pessoa) {
@@ -143,10 +162,10 @@ public class Evento implements Comparable<Evento> {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Set<Pessoa> getPessoasQueConfirmaram() {
+	public List<Pessoa> getPessoasQueConfirmaram() {
 		return  PessoasQueConfirmaram;
 	}
-	public void setPessoasQueConfirmaram(Set<Pessoa> pessoasQueConfirmaram) {
+	public void setPessoasQueConfirmaram(ArrayList<Pessoa> pessoasQueConfirmaram) {
 		PessoasQueConfirmaram =  pessoasQueConfirmaram;
 	}
 	public String getNomeAdmin() {
