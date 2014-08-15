@@ -14,8 +14,7 @@ import views.html.*;
 import play.mvc.Controller;
 
 public class Application extends Controller {
-	static Form<Evento> eventoForm = Form.form(Evento.class);
-	static Form<Pessoa> pessoaForm = Form.form(Pessoa.class);
+	private static Form<Evento> eventoForm = Form.form(Evento.class);
 	private static GenericDAO dao = new GenericDAOImpl();
 	private static int controleInicio;
 	
@@ -148,8 +147,10 @@ public class Application extends Controller {
 		String tema3 = requestData.get("tema3");
 		String tema4 = requestData.get("tema4");
 		String tema5 = requestData.get("tema5");
-		String email = requestData.get("EmailAdmin");
-		String nomeAdm = requestData.get("nomeAdmin");
+		
+		
+		String email = session().get("email");
+		String nomeAdm = session().get("user");
 		
 		String nomeLocal = requestData.get("nomeLocal");
 		String comoChego = requestData.get("rota");

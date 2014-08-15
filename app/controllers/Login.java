@@ -4,7 +4,6 @@ import static play.data.Form.form;
 
 import java.util.List;
 
-import models.Pessoa;
 import models.Usuario;
 import models.dao.GenericDAO;
 import models.dao.GenericDAOImpl;
@@ -17,7 +16,7 @@ import views.html.login;
 public class Login extends Controller {
 	
 	private static GenericDAO dao = new GenericDAOImpl();
-	static Form<Usuario> loginForm = form(Usuario.class).bindFromRequest();
+	private static Form<Usuario> loginForm = form(Usuario.class).bindFromRequest();
 
 	@Transactional
     public static Result show() {
