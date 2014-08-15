@@ -11,6 +11,7 @@ import play.data.Form;
 import play.db.jpa.Transactional;
 import play.mvc.*;
 import views.html.*;
+import play.mvc.Controller;
 
 public class Application extends Controller {
 	static Form<Evento> eventoForm = Form.form(Evento.class);
@@ -18,15 +19,28 @@ public class Application extends Controller {
 	private static GenericDAO dao = new GenericDAOImpl();
 	private static int controleInicio;
 	
-	private static Sistema sistema = new Sistema();
+	private static Sistema sistema = Sistema.getInstance();
 	
-
+	@Transactional
     public static Result index() {
-        return ok(index.render("Your new application is ready."));
+		inicializaDados();
+    	if(session().get("user") == null){
+    		return redirect(routes.Login.show());
+    	}
+    	Sistema sistema = Sistema.getInstance();
+        return ok(index.render("Home Page",sistema));
     }
     
     @Transactional
     public static Result sistema() {
+    	inicializaDados();
+    	Sistema sistema = Sistema.getInstance();
+    	return ok(views.html.sistema.render(sistema,false));
+    	
+    }
+    
+    @Transactional
+    public static void inicializaDados(){
     	controleInicio = controleInicio + 1;
     	if (controleInicio == 1){
     		
@@ -109,82 +123,58 @@ public class Application extends Controller {
     		controleInicio++;
     		
     	}
-    	Sistema sistema = new Sistema();
-    	List<Evento> result = getDao().findAllByClassName("Evento");
-    	sistema.setEventos(result);
-    	return ok(views.html.sistema.render(sistema));
-    	
     }
     
-    public static Result login(){
-    	return ok(views.html.login.render());
-    }
-    
-    public static Result signup(){
-    	return ok(views.html.signUp.render());
-    }
-    
-    @Transactional
-    public static Result cadastrarUsuario(){
-    	DynamicForm requestData = Form.form().bindFromRequest();
-    	String nome = requestData.get("nome");
-    	String email = requestData.get("email");
-    	String senha = requestData.get("password");
-    	Sistema sistema = new Sistema();
-    	List<Evento> result = getDao().findAllByClassName("Evento");
-    	sistema.setEventos(result);
-    	return ok(views.html.sistema.render(sistema));
-    }
-    
-    
-    //@Transactional
-    public static Result logar(){
-    	DynamicForm requestData = Form.form().bindFromRequest();
-    	String nome = requestData.get("nome");
-    	String senha = requestData.get("senha");
-    	//List<Sistema> aux = getDao().findAllByClassName("Sistema");
-    	//Sistema sistema = aux.get(0);
-    	if(sistema.temUsuario(nome,senha)){
-    		//getDao().persist(sistema);
-        	//getDao().flush();
-    		return ok(views.html.sistema.render(sistema));
-    	}else{
-    		//getDao().persist(sistema);
-        	//getDao().flush();
-    		return ok(views.html.login.render());
-    	}
-    	
-    }
     
     @Transactional
     public static Result cadastro() {
-    	Sistema sistema = new Sistema();
-    	List<Evento> result = getDao().findAllByClassName("Evento");
-    	sistema.setEventos(result);
+    	Sistema sistema = Sistema.getInstance();
     	return ok(views.html.cadastro.render(sistema));
     	
     }
     
     @Transactional
     public static Result newEvento() {
-    	// Todos o eventos do Banco de Dados
-    	List<Evento> result = getDao().findAllByClassName("Evento");
+    	
     	// O formulario de evento
 		Form<Evento> filledForm = eventoForm.bindFromRequest();
+		DynamicForm requestData = Form.form().bindFromRequest();
+		
+		String nome = requestData.get("nome");
+		String descricao = requestData.get("descricao");
+		String data = requestData.get("data");
+		String tema1 = requestData.get("tema1");
+		String tema2 = requestData.get("tema2");
+		String tema3 = requestData.get("tema3");
+		String tema4 = requestData.get("tema4");
+		String tema5 = requestData.get("tema5");
+		String email = requestData.get("EmailAdmin");
+		String nomeAdm = requestData.get("nomeAdmin");
+		
+		String nomeLocal = requestData.get("nomeLocal");
+		String comoChego = requestData.get("rota");
+		int capacidade = Integer.parseInt(requestData.get("capacidade"));
+		
 		
 		//Não entendi como funciona isso
 		Evento evento = filledForm.get(); 
 		
-		Sistema sistema = new Sistema();
-    	sistema.setEventos(result);;
+		evento = new Evento(nome,descricao,data,email,nomeAdm);
+		evento.addTema(tema1);
+		evento.addTema(tema2);
+		evento.addTema(tema3);
+		evento.addTema(tema4);
+		evento.addTema(tema5);
+		
+		Sistema sistema = Sistema.getInstance();
+		evento.addLocal(nomeLocal, comoChego, capacidade);
     	if (filledForm.hasErrors()) {
 			return badRequest(views.html.cadastro.render(sistema));
 		} else {
-			// Persiste a meta criada
-			getDao().persist(evento);
-			// Espelha no Banco de Dados
-			getDao().flush();
-			return redirect(routes.Application.sistema());
+			
+			sistema.addEvento(evento);
+			
+			return redirect(routes.Application.index());
 		}
     	
     	
@@ -192,32 +182,26 @@ public class Application extends Controller {
     
     @Transactional
     public static Result participar(Long id) {
-    	Evento evento = getDao().findByEntityId(Evento.class, id);
-    	Sistema sistema = new Sistema();
-    	List<Evento> result = getDao().findAllByClassName("Evento");
-    	sistema.setEventos(result);
+    	Sistema sistema = Sistema.getInstance();
+    	Evento evento = sistema.getEvento(id);
+    	String email = session().get("email");
+    	sistema.addPessoaNoEvento(id, new Usuario(email,null,null));
     	return ok(views.html.evento.render(sistema, evento));
     }
     
     @Transactional
     public static Result addParticipante(Long id) {
     	DynamicForm requestData = Form.form().bindFromRequest();
-    	// Todos o eventos do Banco de Dados
-    	List<Evento> result = getDao().findAllByClassName("Evento");
     	
 		String nome = requestData.get("nome");
 		String email = requestData.get("email");
 		
-		Evento evento = getDao().findByEntityId(Evento.class, id);
-		evento.addParticipanteNoEvento(nome,email,null);
+		Evento evento = sistema.getEvento(id); 
 		
-		getDao().persist(evento);
-		getDao().flush();
-		Sistema sistema = new Sistema();
-    	result = getDao().findAllByClassName("Evento");
-    	sistema.setEventos(result);
+		Sistema sistema = Sistema.getInstance();
+		sistema.addPessoaNoEvento(evento, new Usuario(email,null,nome));
 		return ok(views.html.evento.render(sistema, evento));
-		}
+	}
     	
     	
     	

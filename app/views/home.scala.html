@@ -1,17 +1,12 @@
-@(message: String,sistema: Sistema)
-
-@main("Home Page") {
-
-	<div class="col-sm-12">
-    	<legend>
-    	<a href="/logout" class="btn btn-danger pull-right"> LogOut</a>
-        <h3 class="text-center"> Bem Vindo(a)! @session.get("user") </h3>
-        </legend>
-    </div>
-	<center><img class="centralizar" src="@routes.Assets.at("images/logo.png")" /> </center>
+ 		@(sistema: Sistema)
+ 		
+ 		<!-- APARENTEMENTE ESSE NAO ESTA EM USO -->
+ 		
+ 		<center><img class="centralizar" src="@routes.Assets.at("images/logo.png")" /> </center>
         <ul class="nav nav-pills">
-          <li class="active"><a href="/"">Home</a></li>
+          <li><a href="/"">Home</a></li>
           <li><a href="/cadastro">Cadastrar um novo Hackfest</a></li>
+          
           
         </ul>	
         <div class="container form-horizontal panel panel-primary text-info" >
@@ -29,4 +24,4 @@
         @eventos(sistema, "Banco de Dados")
         @eventos(sistema, "Computacao Desplugada")
         @eventos(sistema, "Desenvolvimento para Web")
-}
+        

@@ -34,13 +34,7 @@ public class Evento implements Comparable<Evento> {
 	
 	@Column
 	private String data;
-	
-	@Column
-	private String nomeAdmin;
-	
-	@Column
-	private String emailAdmin;
-	
+
 	@Column
 	private String tema1;
 	
@@ -58,11 +52,24 @@ public class Evento implements Comparable<Evento> {
 		
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn 
-	private List<Pessoa> PessoasQueConfirmaram;
+	private List<Usuario> PessoasQueConfirmaram;
+	
+//	@Column
+//	private Pessoa adm;
+	
+	@OneToOne(cascade=CascadeType.ALL)
+	@JoinColumn
+	private Local local;
+	
+	@Column
+	private String nomeAdmin;
+	
+	@Column
+	private String emailAdmin;
 	
 	// Construtor vazio para o Hibernate criar os objetos
 	public Evento(){
-		this.PessoasQueConfirmaram = new ArrayList<Pessoa>();
+		this.PessoasQueConfirmaram = new ArrayList<Usuario>();
 	}
 	
 	public Evento(String nome, String descricao, String data, String nomeAdmin, String emailAdmin) {
@@ -71,16 +78,24 @@ public class Evento implements Comparable<Evento> {
 		this.data = data;
 		this.nomeAdmin = nomeAdmin;
 		this.emailAdmin = emailAdmin;
-		this.PessoasQueConfirmaram = new ArrayList<Pessoa>();
-		
-		
+		//adm = new Pessoa(nomeAdmin,emailAdmin,null);
+		this.PessoasQueConfirmaram = new ArrayList<Usuario>();
 	}
+	
+	public Local getLocal() {
+		return local;
+	}
+
+	public void addLocal(String nome,String rota,int capacidade){
+		this.local = new Local(nome,capacidade,rota);
+	}
+	
 	public String getNome() {
 		return nome;
 	}
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+//	public void setNome(String nome) {
+//		this.nome = nome;
+//	}
 	public String getDescricao() {
 		return descricao;
 	}
@@ -98,15 +113,28 @@ public class Evento implements Comparable<Evento> {
 		return PessoasQueConfirmaram.size();
 	}
 	public void setNumDePessoasQueConfirmaram(
-			List<Pessoa> numDePessoasQueConfirmaram) {
+			List<Usuario> numDePessoasQueConfirmaram) {
 		this.PessoasQueConfirmaram =  numDePessoasQueConfirmaram;
 	}
 	
 	//adiciona participante sem acoplamento
 	public void addParticipanteNoEvento(String nome,String email,String senha) {
-		//if (!this.PessoasQueConfirmaram.contains(new Pessoa(nome,email,null))){
-		this.PessoasQueConfirmaram.add(new Pessoa(nome,email,senha));
-		//}
+		if (this.PessoasQueConfirmaram.isEmpty()){
+			this.PessoasQueConfirmaram.add(new Usuario(email,senha,nome));
+		}else{
+			if(!hasUsuario(nome, email, senha)){
+				this.PessoasQueConfirmaram.add(new Usuario(email,senha,nome));
+			}
+		}
+	}
+	
+	private boolean hasUsuario(String nome,String email,String senha){
+		for(Usuario u:PessoasQueConfirmaram){
+			if(u.equals(new Usuario(email,senha,nome))){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override
@@ -127,13 +155,13 @@ public class Evento implements Comparable<Evento> {
 
 	}
 	//isso aqui esta feio!!!
-	public void addParticipanteNoEvento(Pessoa pessoa) {
+	public void addParticipanteNoEvento(Usuario pessoa) {
 		//if (!this.PessoasQueConfirmaram.contains(pessoa)){
 		this.PessoasQueConfirmaram.add(pessoa);
 		//}
 	}
 	
-	public void removerParticipanteNoEvento(Pessoa pessoa) {
+	public void removerParticipanteNoEvento(Usuario pessoa) {
 		if (this.PessoasQueConfirmaram.contains(pessoa)){
 			this.PessoasQueConfirmaram.remove(pessoa);
 		}
@@ -162,17 +190,17 @@ public class Evento implements Comparable<Evento> {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public List<Pessoa> getPessoasQueConfirmaram() {
+	public List<Usuario> getPessoasQueConfirmaram() {
 		return  PessoasQueConfirmaram;
 	}
-	public void setPessoasQueConfirmaram(ArrayList<Pessoa> pessoasQueConfirmaram) {
+	public void setPessoasQueConfirmaram(ArrayList<Usuario> pessoasQueConfirmaram) {
 		PessoasQueConfirmaram =  pessoasQueConfirmaram;
 	}
 	public String getNomeAdmin() {
 		return nomeAdmin;
 	}
 	public void setNomeAdmin(String nomeAdmin) {
-		this.nomeAdmin = nomeAdmin;
+		this.nomeAdmin = nomeAdmin; 
 	}
 	public String getEmailAdmin() {
 		return emailAdmin;

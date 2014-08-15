@@ -1,10 +1,17 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
 @Entity(name = "Pessoa")
@@ -26,16 +33,31 @@ public class Pessoa {
 	@Column
 	private String senha;
 	
+	@Column
+	private boolean logado;
+	
 	// Construtor vazio para o Hibernate criar os objetos
 	public Pessoa (){
 		
 	}
 	
+
 	public Pessoa (String nome, String email, String senha){
 		this.email = email;
 		this.nome = nome;
 		this.senha = senha;
+		logado = false;
 	}
+
+	public boolean isLogado() {
+		return logado;
+	}
+
+
+	public void setLogado(boolean logado) {
+		this.logado = logado;
+	}
+
 
 	public String getNome() {
 		return nome;

@@ -8,6 +8,7 @@
                         <tr>
                             <th>Nome </th>
                             <th>Descricao </th>
+                            <th>Local</th>
                             <th>Data </th>
                             <th>A&ccedil;&otilde;es </th>
                         </tr>
@@ -18,6 +19,11 @@
                         <tr>
                             <td>@evento.getNome()</td>
                             <td>@evento.getDescricao()</td>
+                            @if(evento.getLocal != null){
+                            <td>@evento.getLocal().getNome()</td>
+                            }else{
+                            <td>Local ainda nao definido</td>
+                            }
                             <td>@evento.getData()</td>
                             
   
