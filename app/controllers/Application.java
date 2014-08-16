@@ -139,6 +139,8 @@ public class Application extends Controller {
 		Form<Evento> filledForm = eventoForm.bindFromRequest();
 		DynamicForm requestData = Form.form().bindFromRequest();
 		
+		Sistema sistema = Sistema.getInstance();
+		
 		String nome = requestData.get("nome");
 		String descricao = requestData.get("descricao");
 		String data = requestData.get("data");
@@ -152,10 +154,9 @@ public class Application extends Controller {
 		String email = session().get("email");
 		String nomeAdm = session().get("user");
 		
-		String nomeLocal = requestData.get("nomeLocal");
-		String comoChego = requestData.get("rota");
-		int capacidade = Integer.parseInt(requestData.get("capacidade"));
+		String localSelecionado = requestData.get("local");
 		
+		String prioridade = requestData.get("tipo");
 		
 		//Não entendi como funciona isso
 		Evento evento = filledForm.get(); 
@@ -167,8 +168,27 @@ public class Application extends Controller {
 		evento.addTema(tema4);
 		evento.addTema(tema5);
 		
-		Sistema sistema = Sistema.getInstance();
-		evento.addLocal(nomeLocal, comoChego, capacidade);
+		/*
+		 * esse trecho eh responsavel pelo cadastro/escolha
+		 * do local
+		 */
+		if(localSelecionado.equals("Cadastrar local")){
+			String nomeLocal = requestData.get("nomeLocal");
+			String comoChego = requestData.get("rota");
+			int capacidade = Integer.parseInt(requestData.get("capacidade"));
+			evento.addLocal(nomeLocal, comoChego, capacidade);
+		}else{
+			List<Local> locais = sistema.getLocais();
+			for(Local l :locais){
+				if(l.getNome().equals(localSelecionado)){
+					evento.addLocal(l.getNome(), l.getComoChegar(), l.getCapacidade());
+				}
+			}
+		}
+		
+		Usuario u = sistema.getUsuario(nomeAdm, null, email);
+		u.incrementaNumEventosCriados();
+		
     	if (filledForm.hasErrors()) {
 			return badRequest(views.html.cadastro.render(sistema));
 		} else {

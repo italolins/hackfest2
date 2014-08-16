@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 
 @Entity(name="Usuario")
-public class Usuario {
+public class Usuario implements Comparable<Usuario> {
 
 	@Id
 	@SequenceGenerator(name = "USUARIO_SEQUENCE", sequenceName = "USUARIO_SEQUENCE", allocationSize = 1, initialValue = 0)
@@ -23,6 +23,12 @@ public class Usuario {
 	
 	@Column
 	private String nome;
+	
+	@Column
+	private int numEventosCriados;
+	
+	@Column
+	private int numParticipacao;
 	
 	public Usuario() {
 	}
@@ -57,6 +63,30 @@ public class Usuario {
 		this.nome = nome;
 	}
 
+	public int getNumEventosCriados() {
+		return numEventosCriados;
+	}
+
+	public void setNumEventosCriados(int numEventosCriados) {
+		this.numEventosCriados = numEventosCriados;
+	}
+	
+	public void incrementaNumEventosCriados(){
+		this.numEventosCriados += 1;
+	}
+
+	public int getNumParticipacao() {
+		return numParticipacao;
+	}
+
+	public void setNumParticipacao(int numParticipacao) {
+		this.numParticipacao = numParticipacao;
+	}
+	
+	public void incrementaNumParticipacao(){
+		this.numParticipacao += 1;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -81,5 +111,14 @@ public class Usuario {
 			Usuario pessoa = (Usuario)obj;
 			return (pessoa.getEmail().equals(this.email));
 		}
+	}
+
+	@Override
+	public int compareTo(Usuario user) {
+		// TODO Auto-generated method stub
+		if(numEventosCriados == user.getNumEventosCriados()){
+			return numParticipacao - user.getNumParticipacao();
+		}
+		return numEventosCriados - user.getNumEventosCriados();
 	}
 }

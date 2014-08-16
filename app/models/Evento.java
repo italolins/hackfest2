@@ -41,13 +41,14 @@ public class Evento implements Comparable<Evento> {
 	
 	@Column
 	private String tema5;
+	
+//	@OneToOne(cascade=CascadeType.ALL)
+//	@JoinColumn
+//	private GerenciadorDeVagas gerenciador;
 		
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn 
-	private List<Usuario> PessoasQueConfirmaram;
-	
-//	@Column
-//	private Pessoa adm;
+	private List<Usuario> pessoasQueConfirmaram;
 	
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn
@@ -61,7 +62,8 @@ public class Evento implements Comparable<Evento> {
 	
 	// Construtor vazio para o Hibernate criar os objetos
 	public Evento(){
-		this.PessoasQueConfirmaram = new ArrayList<Usuario>();
+		this.pessoasQueConfirmaram = new ArrayList<Usuario>();
+//		gerenciador = new GerenciadorNormal();
 	}
 	
 	public Evento(String nome, String descricao, String data, String nomeAdmin, String emailAdmin) {
@@ -70,8 +72,8 @@ public class Evento implements Comparable<Evento> {
 		this.data = data;
 		this.nomeAdmin = nomeAdmin;
 		this.emailAdmin = emailAdmin;
-		//adm = new Pessoa(nomeAdmin,emailAdmin,null);
-		this.PessoasQueConfirmaram = new ArrayList<Usuario>();
+		this.pessoasQueConfirmaram = new ArrayList<Usuario>();
+//		gerenciador = new GerenciadorNormal();
 	}
 	
 	public Local getLocal() {
@@ -102,26 +104,20 @@ public class Evento implements Comparable<Evento> {
 	}
 		
 	public int getNumDePessoasQueConfirmaram() {
-		return PessoasQueConfirmaram.size();
+		return pessoasQueConfirmaram.size();
 	}
 	public void setNumDePessoasQueConfirmaram(
 			List<Usuario> numDePessoasQueConfirmaram) {
-		this.PessoasQueConfirmaram =  numDePessoasQueConfirmaram;
+		this.pessoasQueConfirmaram =  numDePessoasQueConfirmaram;
 	}
 	
 	//adiciona participante sem acoplamento
 	public void addParticipanteNoEvento(String nome,String email,String senha) {
-		if (this.PessoasQueConfirmaram.isEmpty()){
-			this.PessoasQueConfirmaram.add(new Usuario(email,senha,nome));
-		}else{
-			if(!hasUsuario(nome, email, senha)){
-				this.PessoasQueConfirmaram.add(new Usuario(email,senha,nome));
-			}
-		}
+			addParticipanteNoEvento(new Usuario(email,senha,nome));
 	}
 	
 	private boolean hasUsuario(String nome,String email,String senha){
-		for(Usuario u:PessoasQueConfirmaram){
+		for(Usuario u:pessoasQueConfirmaram){
 			if(u.equals(new Usuario(email,senha,nome))){
 				return true;
 			}
@@ -148,28 +144,33 @@ public class Evento implements Comparable<Evento> {
 	}
 	//isso aqui esta feio!!!
 	public void addParticipanteNoEvento(Usuario pessoa) {
-		//if (!this.PessoasQueConfirmaram.contains(pessoa)){
-		this.PessoasQueConfirmaram.add(pessoa);
-		//}
+		if (!this.pessoasQueConfirmaram.contains(pessoa)){
+			this.pessoasQueConfirmaram.add(pessoa);
+		}
+		//this.gerenciador.addParticipanteNoEvento(pessoasQueConfirmaram, pessoa, local.getCapacidade());
 	}
 	
 	public void removerParticipanteNoEvento(Usuario pessoa) {
-		if (this.PessoasQueConfirmaram.contains(pessoa)){
-			this.PessoasQueConfirmaram.remove(pessoa);
+		if (this.pessoasQueConfirmaram.contains(pessoa)){
+			this.pessoasQueConfirmaram.remove(pessoa);
 		}
 		
 	}
 	
 	public int numDePessoasQueConfirmaram(){
-		return this.PessoasQueConfirmaram.size();
+		return this.pessoasQueConfirmaram.size();
+	}
+	
+	public boolean isFull(){
+		return local.getCapacidade() >= pessoasQueConfirmaram.size();
 	}
 	
 	@Override
 	public int compareTo(Evento evento) {
-		if (this.PessoasQueConfirmaram.size() > evento.numDePessoasQueConfirmaram()) {
+		if (this.pessoasQueConfirmaram.size() > evento.numDePessoasQueConfirmaram()) {
 		      return -1;
 		    }
-	    if (this.PessoasQueConfirmaram.size() < evento.numDePessoasQueConfirmaram()) {
+	    if (this.pessoasQueConfirmaram.size() < evento.numDePessoasQueConfirmaram()) {
 		      return 1;
 		    }
 	    return 0;
@@ -183,10 +184,10 @@ public class Evento implements Comparable<Evento> {
 		this.id = id;
 	}
 	public List<Usuario> getPessoasQueConfirmaram() {
-		return  PessoasQueConfirmaram;
+		return  pessoasQueConfirmaram;
 	}
 	public void setPessoasQueConfirmaram(ArrayList<Usuario> pessoasQueConfirmaram) {
-		PessoasQueConfirmaram =  pessoasQueConfirmaram;
+		this.pessoasQueConfirmaram =  pessoasQueConfirmaram;
 	}
 	public String getNomeAdmin() {
 		return nomeAdmin;

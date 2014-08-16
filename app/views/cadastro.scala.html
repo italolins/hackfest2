@@ -30,19 +30,19 @@
 		<form action="@routes.Application.newEvento()" method="post">
 			<div class="col-lg-7">
 			<h3>Adicionar novo Hackfest:</h3><br>
-			<input class="input-xxlarge" type="text" size="80" maxlength="30" placeholder="T&iacute;tulo do hackfest" name="nome">
+			<input class="input-xxlarge" type="text" size="40" maxlength="30" placeholder="T&iacute;tulo do hackfest" name="nome">
 			<br><br>
             <input class="input-xxlarge" type="text" size="90" maxlength="80" placeholder="Descreva o seu hackfest" name="descricao"><br><br>
             <input class="input-xxlarge" type="text" size="40" maxlength="10" placeholder="Data do seu hackfest: dd/mm/aaaa" name="data"> <br>
             </div>
-            <div class="col-lg-6">
-            <center><h3>Prioridade do Hackfest:</h3><br><br></center>
-            <input  type="radio" name="tipo" value="normal">Normal<br>
-			<input  type="radio" name="tipo" value="experientes">Experientes
+            <div class="col-lg-7">
+            <center><h3>Prioridade do Hackfest:</h3><br></center>
+            <input  type="radio" name="tipo" value="normal" checked>Hackfest com prioridade normal<br>
+			<input  type="radio" name="tipo" value="experientes">Hackfest prioritario para participates experientes
             </div>
             <br>
             
-            <div class="col-lg-8">
+            <div class="col-lg-11">
             <h4> <b>Apague</b> o(s) tema(s) na qual o seu evento n&atilde;o est&aacute; relacionado:</h4>
             <input class="input-xlarge" size="25" id="focusedInput" type="text" value="Engenharia de Software" name=tema1>
             <input class="input-xlarge" size="25" id="focusedInput" type="text" value="Banco de Dados" name=tema2>
@@ -57,15 +57,17 @@
 			<input class="input-xxlarge" type="text" size="50" maxlength="30" placeholder="Insira o Seu email" name="EmailAdmin"><br><br>
 			-->
 			<h4>Adicione o local onde o evento ira ocorrer</h4>
-			<input class="input-xlarge" size="80" type="text" placeholder="Nome do local" name="nomeLocal"><br><br>
-			<input class="input-xlarge" size="80" type="text" placeholder="Como chego la?" name="rota"><br><br>
-			<input class="input-xlarge" size="80" type="text" placeholder="Qual a capacidade?" name="capacidade">
 			<select name = "local">
 				<option name="cadastrar">Cadastrar local</option>
 				@for(local <- sistema.getLocais()){
 				<option name=@local.getNome()>@local.getNome()</option>
 				}
-			</select>
+			</select><br><br>
+			<h4>N&atilde;o tem o local cadastrado?<br>Cadastre ele aqui:</h4>
+			<input class="input-xlarge" size="80" type="text" placeholder="Nome do local" name="nomeLocal"><br><br>
+			<input class="input-xlarge" size="80" type="text" placeholder="Como chego la?" name="rota"><br><br>
+			<input class="input-xlarge" size="80" type="text" placeholder="Qual a capacidade?" name="capacidade">
+			
 			<br><br><center><input type="submit" class="btn btn-primary" value="Cadastrar">  </center></div></div>
              </form>
              
