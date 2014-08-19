@@ -33,7 +33,10 @@ public class Usuario implements Comparable<Usuario> {
 	public Usuario() {
 	}
 	
-	public Usuario(String email, String pass, String nome) {
+	public Usuario(String email, String pass, String nome) throws Exception {
+		if(email == null){
+			throw new Exception ("e-mail Invalido");
+		}
 		this.email = email;
 		this.nome = nome;
 		this.pass = pass;
@@ -78,7 +81,7 @@ public class Usuario implements Comparable<Usuario> {
 	public int getNumParticipacao() {
 		return numParticipacao;
 	}
-
+	
 	public void setNumParticipacao(int numParticipacao) {
 		this.numParticipacao = numParticipacao;
 	}
@@ -102,7 +105,13 @@ public class Usuario implements Comparable<Usuario> {
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		return result;
 	}
-
+	
+	/*
+	 * Um usuario eh igual ao outro se os emails forem
+	 * os mesmos
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if(!(obj instanceof Usuario)){
@@ -112,10 +121,16 @@ public class Usuario implements Comparable<Usuario> {
 			return (pessoa.getEmail().equals(this.email));
 		}
 	}
-
+	
+	/*
+	 * Usuario eh comparado com outro pela quantidade
+	 * de eventos criados e se forem os mesmos pela
+	 * quantidade de participacao em eventos
+	 * (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
 	@Override
 	public int compareTo(Usuario user) {
-		// TODO Auto-generated method stub
 		if(numEventosCriados == user.getNumEventosCriados()){
 			return numParticipacao - user.getNumParticipacao();
 		}

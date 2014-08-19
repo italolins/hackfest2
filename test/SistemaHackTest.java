@@ -21,16 +21,19 @@ public class SistemaHackTest extends AbstractTest{
 	public void iniciar(){
 		sistema = Sistema.getInstance();
 		evento1 = new Evento("Arduino", "introduçao ao Arduino", "10/08/2014", "italo", "italo@gmail");
-		pessoa1 = new Usuario("italo@gmail", "123","Italo");
+		try {
+			pessoa1 = new Usuario("italo@gmail", "123","Italo");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		local1 = new Local("lcc", 10, "pergunte a alguem");
 		evento1.addLocal("lcc", "pergunte a alguem",10);
 	}
 	
-//	@Test
-//	public void testaCriarEvento(){
-//		evento1 = new Evento("Arduino","introduçao ao Arduino","10/08/2014","italo",);
-//	}
-	
+	/*
+	 * Os testes abaixo sao relativos ao evento
+	 */
 	
 	@Test
 	public void testaAdicionarEvento(){
@@ -54,16 +57,20 @@ public class SistemaHackTest extends AbstractTest{
 		Assert.assertTrue(evento1.numDePessoasQueConfirmaram() == 1 );
 	}
 	
-//	@Test
-//	public void testaAdicionarPessoaNoSistema(){
-//		sistema.signUp("Italo", "italo@gmail", "123");
-//		Assert.assertTrue(sistema.temUsuario("Italo", "123"));
-//	}
-//	
-//	@Test
-//	public void testaRemoverEvento(){
-//		sistema.addEvento(evento1);
-//		Assert.assertTrue(sistema.removeEvento(evento1));
+	/*
+	 * Os testes abaixo sao relativos ao sistema/BD
+	 */
+	
+	@Test
+	public void testaNaoAdicionarMesmoEvento(){
+		int anterior = sistema.getEventos().size();
+		sistema.addEvento(evento1);
+		sistema.addEvento(evento1);
+		Assert.assertTrue(sistema.getEventos().size() == anterior + 1);
+	}
+	
+//	@Test void testaNaoAdicionarMesmaPessoa(){
+//		int anterior = sistema.getNumUsuarios();
 //	}
 
 }

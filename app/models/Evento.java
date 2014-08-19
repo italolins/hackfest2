@@ -4,6 +4,7 @@ package models;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.*;
 
 
@@ -79,7 +80,11 @@ public class Evento implements Comparable<Evento> {
 	public Local getLocal() {
 		return local;
 	}
-
+	
+	public void setLocal(Local local){
+		this.local = local;
+	}
+	
 	public void addLocal(String nome,String rota,int capacidade){
 		this.local = new Local(nome,capacidade,rota);
 	}
@@ -87,9 +92,7 @@ public class Evento implements Comparable<Evento> {
 	public String getNome() {
 		return nome;
 	}
-//	public void setNome(String nome) {
-//		this.nome = nome;
-//	}
+
 	public String getDescricao() {
 		return descricao;
 	}
@@ -106,6 +109,10 @@ public class Evento implements Comparable<Evento> {
 	public int getNumDePessoasQueConfirmaram() {
 		return pessoasQueConfirmaram.size();
 	}
+	
+	/*
+	 * Esse metodo da um set na lista de participantes
+	 */
 	public void setNumDePessoasQueConfirmaram(
 			List<Usuario> numDePessoasQueConfirmaram) {
 		this.pessoasQueConfirmaram =  numDePessoasQueConfirmaram;
@@ -113,13 +120,26 @@ public class Evento implements Comparable<Evento> {
 	
 	//adiciona participante sem acoplamento
 	public void addParticipanteNoEvento(String nome,String email,String senha) {
-			addParticipanteNoEvento(new Usuario(email,senha,nome));
+			try {
+				addParticipanteNoEvento(new Usuario(email,senha,nome));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
+	/*
+	 * Verifica se o usuario esta no evento
+	 */
 	private boolean hasUsuario(String nome,String email,String senha){
 		for(Usuario u:pessoasQueConfirmaram){
-			if(u.equals(new Usuario(email,senha,nome))){
-				return true;
+			try {
+				if(u.equals(new Usuario(email,senha,nome))){
+					return true;
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return false;
@@ -142,10 +162,16 @@ public class Evento implements Comparable<Evento> {
 		}
 
 	}
-	//isso aqui esta feio!!!
+	
+	
+	/*
+	 * NAO FOI POSSIVEL FINALIZAR ESSE METODO POIS NAO TIVE RESPOSTA
+	 * NO PIAZZA SOBRE O PROBLEMA QUE ESTAVA TENDO NA CLASSE ABSTRATA
+	 */
 	public void addParticipanteNoEvento(Usuario pessoa) {
-		if (!this.pessoasQueConfirmaram.contains(pessoa)){
-			this.pessoasQueConfirmaram.add(pessoa);
+		if ((!this.pessoasQueConfirmaram.contains(pessoa)) ){
+			if(local.getCapacidade() > pessoasQueConfirmaram.size())
+				this.pessoasQueConfirmaram.add(pessoa);
 		}
 		//this.gerenciador.addParticipanteNoEvento(pessoasQueConfirmaram, pessoa, local.getCapacidade());
 	}
@@ -186,6 +212,10 @@ public class Evento implements Comparable<Evento> {
 	public List<Usuario> getPessoasQueConfirmaram() {
 		return  pessoasQueConfirmaram;
 	}
+	
+	/*
+	 * Metodo identico ao setNumPessoasQueConfirmaram
+	 */
 	public void setPessoasQueConfirmaram(ArrayList<Usuario> pessoasQueConfirmaram) {
 		this.pessoasQueConfirmaram =  pessoasQueConfirmaram;
 	}
@@ -200,36 +230,6 @@ public class Evento implements Comparable<Evento> {
 	}
 	public void setEmailAdmin(String emailAdmin) {
 		this.emailAdmin = emailAdmin;
-	}
-	public String getTema1() {
-		return tema1;
-	}
-	public void setTema1(String tema1) {
-		this.tema1 = tema1;
-	}
-	public String getTema2() {
-		return tema2;
-	}
-	public void setTema2(String tema2) {
-		this.tema2 = tema2;
-	}
-	public String getTema3() {
-		return tema3;
-	}
-	public void setTema3(String tema3) {
-		this.tema3 = tema3;
-	}
-	public String getTema4() {
-		return tema4;
-	}
-	public void setTema4(String tema4) {
-		this.tema4 = tema4;
-	}
-	public String getTema5() {
-		return tema5;
-	}
-	public void setTema5(String tema5) {
-		this.tema5 = tema5;
 	}
 	
 	public List<String> getTemas(){

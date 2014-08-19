@@ -2,12 +2,15 @@
 
 @main("Home Page") {
 
-	<div class="col-sm-12">
-    	<legend>
-    	<a href="/logout" class="btn btn-danger pull-right"> LogOut</a>
-        <h3 class="text-center"> Bem Vindo(a)! @session.get("user") </h3>
-        </legend>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		
+        <h3>
+        <span class="label label-primary">Bem Vindo(a)! @session.get("user")</span>
+        <a href="/logout" class="btn btn-primary pull-right" > LogOut</a>
+    	<a class="btn btn-primary pull-right">Minha Conta</a>
+        </h3>
     </div>
+    <br><br>
 	<center><img class="centralizar" src="@routes.Assets.at("images/logo.png")" /> </center>
         <ul class="nav nav-pills">
           <li class="active"><a href="/"">Home</a></li>

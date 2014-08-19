@@ -29,6 +29,12 @@ public class Local {
 		
 	}
 	
+	/**
+	 * 
+	 * @param nome do local
+	 * @param capacidade do local
+	 * @param comoChegar descricao de como chegar
+	 */
 	public Local(String nome,int capacidade,String comoChegar){
 		this.nome = nome;
 		this.capacidade = capacidade;
@@ -70,7 +76,12 @@ public class Local {
 		result = prime * result + ((nome == null) ? 0 : nome.hashCode());
 		return result;
 	}
-
+	
+	/*
+	 * Um local eh igual a outro se os nomes forem os mesmos
+	 * (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if(!(obj instanceof Local)){

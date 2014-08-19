@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 
 
+
+
+
 import play.db.jpa.Transactional;
 import models.Evento;
 import models.Local;
@@ -121,7 +124,14 @@ public class Sistema {
 	}
 	@Transactional
 	public void signUp(String nome,String email,String senha){
-		Application.getDao().persist(new Usuario(email,senha,nome));
+		Usuario u;
+		try {
+			u = new Usuario(email,senha,nome);
+			Application.getDao().persist(u);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Application.getDao().flush();
 	}
 
@@ -129,8 +139,13 @@ public class Sistema {
 	public boolean temUsuario(String nome, String senha,String email) {
 		List<Usuario> clientesDoSistema = Application.getDao().findAllByClassName("Usuario");
 		for(Usuario p:clientesDoSistema){
-			if(p.equals(new Usuario(email,senha,nome))){
-				return true;
+			try {
+				if(p.equals(new Usuario(email,senha,nome))){
+					return true;
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return false;
@@ -158,13 +173,21 @@ public class Sistema {
 	public Usuario getUsuario(String nome,String senha,String email){
 		List<Usuario> clientesDoSistema = Application.getDao().findAllByClassName("Usuario");
 		for(Usuario p:clientesDoSistema){
-			if(p.equals(new Usuario(email,senha,nome))){
-				return p;
+			try {
+				if(p.equals(new Usuario(email,senha,nome))){
+					return p;
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return null;
 	}
-	
+
+	public int getNumUsuarios() {
+		return Application.getDao().findAllByClassName("Usuario").size();
+	}
 
 
 }
