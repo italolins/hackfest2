@@ -49,8 +49,7 @@ public class Application extends Controller {
     @Transactional
     public static Result newEvento() {
     	
-    	// O formulario de evento
-		Form<Evento> filledForm = eventoForm.bindFromRequest();
+    	
 		DynamicForm requestData = Form.form().bindFromRequest();
 		
 		Sistema sistema = Sistema.getInstance();
@@ -73,7 +72,7 @@ public class Application extends Controller {
 		String prioridade = requestData.get("tipo");
 		
 		//Não entendi como funciona isso
-		Evento evento = filledForm.get(); 
+		Evento evento; // = filledForm.get(); 
 		
 		evento = new Evento(nome,descricao,data,email,nomeAdm);
 		evento.addTema(tema1);
@@ -103,14 +102,12 @@ public class Application extends Controller {
 		Usuario u = sistema.getUsuario(nomeAdm, null, email);
 		u.incrementaNumEventosCriados();
 		
-    	if (filledForm.hasErrors()) {
-			return badRequest(views.html.cadastro.render(sistema));
-		} else {
+    	
 			
-			sistema.addEvento(evento);
+		sistema.addEvento(evento);
 			
-			return redirect(routes.Application.index());
-		}
+		return redirect(routes.Application.index());
+		
     	
     	
     }
